@@ -18,6 +18,7 @@ namespace BooksApi.Controllers {
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult<Format>> AddFormat([Bind("Name, CreatedAt, UpdatedAt")] Format format,
             CancellationToken token)
         {

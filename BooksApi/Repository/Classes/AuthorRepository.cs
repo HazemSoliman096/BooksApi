@@ -14,7 +14,7 @@ namespace BooksApi.Repository.Classes {
             return await _context.Authors.ToListAsync(token);
         }
 
-        public async Task<Author?> GetAuthorById(int id, CancellationToken token) {
+        public async Task<Author?> GetAuthorById(int? id, CancellationToken token) {
             return await _context.Authors.FirstOrDefaultAsync(e => e.Id == id, token);
 
         }

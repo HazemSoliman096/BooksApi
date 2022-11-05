@@ -14,7 +14,7 @@ namespace BooksApi.Repository.Classes {
             return await _context.Genres.ToListAsync(token);
         }
 
-        public async Task<Genre?> GetGenreById(int id, CancellationToken token) {
+        public async Task<Genre?> GetGenreById(int? id, CancellationToken token) {
             return await _context.Genres.FirstOrDefaultAsync(e => e.Id == id, token);
 
         }
