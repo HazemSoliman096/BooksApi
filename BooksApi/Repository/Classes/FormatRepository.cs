@@ -14,7 +14,7 @@ namespace BooksApi.Repository.Classes {
             return await _context.Formats.ToListAsync(token);
         }
 
-        public async Task<Format?> GetFormatById(int id, CancellationToken token) {
+        public async Task<Format?> GetFormatById(int? id, CancellationToken token) {
             return await _context.Formats.FirstOrDefaultAsync(e => e.Id == id, token);
 
         }
@@ -33,7 +33,7 @@ namespace BooksApi.Repository.Classes {
             }
             catch (Exception e)
             {
-                throw e;
+                throw;
             }
             return  oldFormat;
         }
