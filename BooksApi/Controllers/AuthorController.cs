@@ -13,7 +13,7 @@ namespace BooksApi.Controllers {
 
         [HttpGet]
         public async Task <ActionResult<ICollection<Author>>> GetAuthors(CancellationToken cancellationToken) {
-            var authors = await _authorRepository.GetAuthors(cancellationToken);
+            ICollection<Author> authors = await _authorRepository.GetAuthors(cancellationToken);
             return Ok(authors);
         }
 
@@ -22,8 +22,17 @@ namespace BooksApi.Controllers {
             CancellationToken token)
         {
             ModelState.Remove("Books");
-            var newAuthor = await _authorRepository.CreateAuthor(author, token);
-            return CreatedAtAction(nameof(GetAuthors), new {id = newAuthor.Id}, newAuthor);
+
+            Author? newAuthor = await _authorRepository.CreateAuthor(author, token);
+
+            if (newAuthor != null)
+            {
+                return CreatedAtAction(nameof(GetAuthors), new { id = newAuthor.Id }, newAuthor);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Can't create author check input values and retry.");
+            }
         }
 
         [HttpGet("id")]
@@ -33,7 +42,7 @@ namespace BooksApi.Controllers {
             {
                 return NotFound();
             }
-            var author = await _authorRepository.GetAuthorById(id, token);
+            Author? author = await _authorRepository.GetAuthorById(id, token);
 
             if (author == null)
             {
@@ -44,9 +53,9 @@ namespace BooksApi.Controllers {
         }
 
         [HttpDelete("id")]
-        public async Task<ActionResult<Author>> DeleteAuthor(int id, CancellationToken token)
+        public async Task<IActionResult> DeleteAuthor(int id, CancellationToken token)
         {
-            var author = await _authorRepository.GetAuthorById(id, token);
+            Author? author = await _authorRepository.GetAuthorById(id, token);
 
             if(author == null)
             {
@@ -56,5 +65,12 @@ namespace BooksApi.Controllers {
             await _authorRepository.DeleteAuthor(id, token);
             return NoContent();
         }
+
+        //[HttpPut("id")]
+        //public async Task <IActionResult> EditAuthor(int id, CancellationToken token)
+        //{
+        //    Author? author = await _authorRepository.GetAuthorById(id, token);
+
+        //}
     }
 }

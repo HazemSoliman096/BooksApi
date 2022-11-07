@@ -23,7 +23,13 @@ namespace BooksApi.Controllers {
         {
             ModelState.Remove("Books");
             var newFormat = await _formatRepository.CreateFormat(format, token);
-            return CreatedAtAction(nameof(GetFormats), new {id = newFormat.Id}, newFormat);
+            if(newFormat != null)
+            {
+                return CreatedAtAction(nameof(GetFormats), new { id = newFormat.Id }, newFormat);
+            } else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Can't create format check input values and retry.");
+            }
         }
 
         [HttpGet("id")]
@@ -44,7 +50,7 @@ namespace BooksApi.Controllers {
         }
 
         [HttpDelete("id")]
-        public async Task<ActionResult<Format>> DeleteAuthor(int id, CancellationToken token)
+        public async Task<IActionResult> DeleteAuthor(int id, CancellationToken token)
         {
             var author = await _formatRepository.GetFormatById(id, token);
 

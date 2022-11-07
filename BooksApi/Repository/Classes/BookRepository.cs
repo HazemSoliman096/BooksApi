@@ -43,7 +43,7 @@ namespace BooksApi.Repository.Classes {
         oldbook.UpdatedAt = DateTime.Today;
         await _context.SaveChangesAsync(token);
       }
-      catch (Exception e)
+      catch (Exception)
       {
         throw;
       }

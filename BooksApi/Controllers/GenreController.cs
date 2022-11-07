@@ -23,7 +23,15 @@ namespace BooksApi.Controllers {
         {
             ModelState.Remove("Books");
             var newGenre = await _genreRepository.CreateGenre(format, token);
-            return CreatedAtAction(nameof(GetGenres), new {id = newGenre.Id}, newGenre);
+
+            if (newGenre != null)
+            {
+                return CreatedAtAction(nameof(GetGenres), new { id = newGenre.Id }, newGenre);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Can't create genre check input values and retry.");
+            }
         }
 
         [HttpGet("id")]
@@ -44,7 +52,7 @@ namespace BooksApi.Controllers {
         }
 
         [HttpDelete("id")]
-        public async Task<ActionResult<Format>> DeleteAuthor(int id, CancellationToken token)
+        public async Task<IActionResult> DeleteAuthor(int id, CancellationToken token)
         {
             var author = await _genreRepository.GetGenreById(id, token);
 
