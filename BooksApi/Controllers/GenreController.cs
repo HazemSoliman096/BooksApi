@@ -12,13 +12,12 @@ namespace BooksApi.Controllers {
         }
 
         [HttpGet]
-        public async Task <ICollection<Genre>> GetGenres(CancellationToken cancellationToken) {
+        public async Task <ActionResult<ICollection<Genre>>> GetGenres(CancellationToken cancellationToken) {
             var formats = await _genreRepository.GetGenres(cancellationToken);
-            return formats;
+            return Ok(formats);
         }
 
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
         public async Task<ActionResult<Genre>> AddGenre([Bind("Name, CreatedAt, UpdatedAt")] Genre format,
             CancellationToken token)
         {
@@ -41,7 +40,21 @@ namespace BooksApi.Controllers {
                 return NotFound();
             }
 
-            return genre;
+            return Ok(genre);
+        }
+
+        [HttpDelete("id")]
+        public async Task<ActionResult<Format>> DeleteAuthor(int id, CancellationToken token)
+        {
+            var author = await _genreRepository.GetGenreById(id, token);
+
+            if (author == null)
+            {
+                return NotFound();
+            }
+
+            await _genreRepository.DeleteGenre(id, token);
+            return NoContent();
         }
     }
 }

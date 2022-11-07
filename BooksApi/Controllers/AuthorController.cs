@@ -12,13 +12,12 @@ namespace BooksApi.Controllers {
         }
 
         [HttpGet]
-        public async Task <ICollection<Author>> GetAuthors(CancellationToken cancellationToken) {
+        public async Task <ActionResult<ICollection<Author>>> GetAuthors(CancellationToken cancellationToken) {
             var authors = await _authorRepository.GetAuthors(cancellationToken);
-            return authors;
+            return Ok(authors);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult<Author>> AddAuthor([Bind("Name, CreatedAt, UpdatedAt")] Author author,
             CancellationToken token)
         {
@@ -41,7 +40,21 @@ namespace BooksApi.Controllers {
                 return NotFound();
             }
 
-            return author;
+            return Ok(author);
+        }
+
+        [HttpDelete("id")]
+        public async Task<ActionResult<Author>> DeleteAuthor(int id, CancellationToken token)
+        {
+            var author = await _authorRepository.GetAuthorById(id, token);
+
+            if(author == null)
+            {
+                return NotFound();
+            }
+
+            await _authorRepository.DeleteAuthor(id, token);
+            return NoContent();
         }
     }
 }

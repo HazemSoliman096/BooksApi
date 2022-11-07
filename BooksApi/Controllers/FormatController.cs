@@ -12,13 +12,12 @@ namespace BooksApi.Controllers {
         }
 
         [HttpGet]
-        public async Task <ICollection<Format>> GetFormats(CancellationToken cancellationToken) {
+        public async Task<ActionResult<ICollection<Format>>> GetFormats(CancellationToken cancellationToken) {
             var formats = await _formatRepository.GetFormats(cancellationToken);
-            return formats;
+            return Ok(formats);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult<Format>> AddFormat([Bind("Name, CreatedAt, UpdatedAt")] Format format,
             CancellationToken token)
         {
@@ -41,7 +40,21 @@ namespace BooksApi.Controllers {
                 return NotFound();
             }
 
-            return format;
+            return Ok(format);
+        }
+
+        [HttpDelete("id")]
+        public async Task<ActionResult<Format>> DeleteAuthor(int id, CancellationToken token)
+        {
+            var author = await _formatRepository.GetFormatById(id, token);
+
+            if (author == null)
+            {
+                return NotFound();
+            }
+
+            await _formatRepository.DeleteFormat(id, token);
+            return NoContent();
         }
     }
 }
