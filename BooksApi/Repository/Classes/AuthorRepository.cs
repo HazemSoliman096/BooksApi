@@ -19,22 +19,24 @@ namespace BooksApi.Repository.Classes {
 
         }
 
-        public async Task<Author?> UpdateAuthor(Author author, CancellationToken token) {
-            Author? oldAuthor = await GetAuthorById(author.Id, token);
+        public async Task<Author?> UpdateAuthor(int id, string name, CancellationToken token) {
+            Author? oldAuthor = await GetAuthorById(id, token);
+
             if(oldAuthor is null) {
                 return null;
             }
 
             try
             {
-                oldAuthor.Name = author.Name;
-                oldAuthor.UpdatedAt = DateTime.Today;
+                oldAuthor.Name = name;
+                oldAuthor.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync(token);
             }
             catch (Exception)
             {
                 throw;
             }
+
             return  oldAuthor;
         }
 

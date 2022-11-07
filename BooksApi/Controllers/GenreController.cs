@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using BooksApi.Repository.Interfaces;
 using BooksApi.Models;
+using BooksApi.Repository.Classes;
 
 namespace BooksApi.Controllers {
     [ApiController]
@@ -34,7 +35,7 @@ namespace BooksApi.Controllers {
             }
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Genre>> GetGenre(int? id, CancellationToken token)
         {
             if (id == null)
@@ -51,7 +52,7 @@ namespace BooksApi.Controllers {
             return Ok(genre);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAuthor(int id, CancellationToken token)
         {
             var author = await _genreRepository.GetGenreById(id, token);
@@ -62,6 +63,22 @@ namespace BooksApi.Controllers {
             }
 
             await _genreRepository.DeleteGenre(id, token);
+            return NoContent();
+        }
+
+        [HttpPut("{id}/{name}")]
+        public async Task<IActionResult> EditGenre(int id, string name, CancellationToken token)
+        {
+
+            try
+            {
+                await _genreRepository.UpdateGenre(id, name, token);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Can't update format check input values and retry.\n " + e.Message);
+            }
+
             return NoContent();
         }
     }

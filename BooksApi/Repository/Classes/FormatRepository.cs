@@ -19,16 +19,16 @@ namespace BooksApi.Repository.Classes {
 
         }
 
-        public async Task<Format?> UpdateFormat(Format format, CancellationToken token) {
-            Format? oldFormat = await GetFormatById(format.Id, token);
+        public async Task<Format?> UpdateFormat(int id, string name, CancellationToken token) {
+            Format? oldFormat = await GetFormatById(id, token);
             if(oldFormat is null) {
                 return null;
             }
 
             try
             {
-                oldFormat.Name = format.Name;
-                oldFormat.UpdatedAt = DateTime.Today;
+                oldFormat.Name = name;
+                oldFormat.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync(token);
             }
             catch (Exception)

@@ -19,16 +19,16 @@ namespace BooksApi.Repository.Classes {
 
         }
 
-        public async Task<Genre?> UpdateGenre(Genre genre, CancellationToken token) {
-            Genre? oldGenre = await GetGenreById(genre.Id, token);
+        public async Task<Genre?> UpdateGenre(int id, string genre, CancellationToken token) {
+            Genre? oldGenre = await GetGenreById(id, token);
             if(oldGenre is null) {
                 return null;
             }
 
             try
             {
-                oldGenre.Name = genre.Name;
-                oldGenre.UpdatedAt = DateTime.Today;
+                oldGenre.Name = genre;
+                oldGenre.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync(token);
             }
             catch (Exception)

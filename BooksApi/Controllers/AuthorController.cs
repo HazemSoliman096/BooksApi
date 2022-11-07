@@ -35,7 +35,7 @@ namespace BooksApi.Controllers {
             }
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Author>> GetAuthor(int? id, CancellationToken token)
         {
             if (id == null)
@@ -52,7 +52,7 @@ namespace BooksApi.Controllers {
             return Ok(author);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAuthor(int id, CancellationToken token)
         {
             Author? author = await _authorRepository.GetAuthorById(id, token);
@@ -66,11 +66,19 @@ namespace BooksApi.Controllers {
             return NoContent();
         }
 
-        //[HttpPut("id")]
-        //public async Task <IActionResult> EditAuthor(int id, CancellationToken token)
-        //{
-        //    Author? author = await _authorRepository.GetAuthorById(id, token);
+        [HttpPut("{id}/{name}")]
+        public async Task<IActionResult> EditAuthor(int id, string name, CancellationToken token)
+        {
 
-        //}
+            try
+            {
+                await _authorRepository.UpdateAuthor(id, name, token);
+            } catch(Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Can't update author check input values and retry.\n " + e.Message);
+            }
+
+            return NoContent();
+        }
     }
 }
