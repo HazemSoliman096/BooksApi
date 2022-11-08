@@ -1,6 +1,5 @@
 ﻿using BooksApi.Models;
 using BooksApi.Repository.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BooksApi.Controllers
@@ -23,7 +22,7 @@ namespace BooksApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Book>> AddBook([Bind("Title, AuthorId, GenreId, FormatId, Pages, CreatedAt, UpdatedAt, ")] Book book,
+        public async Task<ActionResult<Book>> AddBook([Bind("Title, AuthorId, GenreId, FormatId, Pages, CreatedAt, UpdatedAt")] Book book,
             CancellationToken token)
         {
             ModelState.Remove("Author");
@@ -74,7 +73,7 @@ namespace BooksApi.Controllers
         }
 
         [HttpPut("{id}/{name}")]
-        public async Task<IActionResult> EditBook(int id, Book book, CancellationToken token)
+        public async Task<IActionResult> EditBook(int id, [Bind("Title, AuthorId, GenreId, FormatId, Pages, CreatedAt, UpdatedAt")] Book book, CancellationToken token)
         {
             if(id != book.Id || book == null)
             {
